@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <propel>
+        <datasources default="bookstore">
+            <datasource id="bookstore">
+                <adapter>sqlite</adapter> <!-- sqlite, mysql, mssql, oracle, or pgsql -->
+                <connection>
+                    <dsn>sqlite:/tmp/foo.db</dsn>
+                    <user></user>
+                    <password></password>
+                </connection>
+            </datasource>
+        </datasources>
+    </propel>
+</config>

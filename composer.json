@@ -1,0 +1,5 @@
+{    "require": {
+        "propel/propel1": "1.x",
+        "rickysu/cacheable-behavior-bundle": "1.0.x"
+    }
+}
