@@ -14,7 +14,7 @@ php composer.phar install
 
 ### Edit config for build time.
 
-```
+```ini
 # conf/build.properties
 # Database driver
 propel.database = sqlite
@@ -35,7 +35,7 @@ propel.sql.dir = ${propel.output.dir}/conf/db/sql
 
 ### Edit config for runtime.
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <propel>
@@ -95,4 +95,6 @@ cd conf
 ```
 ../vendor/bin/propel-gen insert-sql
 ```
+
+For more information please read the [Propel document](http://propelorm.org/documentation/).
 
