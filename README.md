@@ -96,5 +96,100 @@ cd conf
 ../vendor/bin/propel-gen insert-sql
 ```
 
+### how cache works
+
+```php
+<?php
+//index.php
+use mytest\mycache;
+
+$loader=include __DIR__.'/vendor/autoload.php';
+$loader->add('',__DIR__.'/src');
+
+mycache::init();
+\Propel::init(__DIR__.'/src/orm-conf.php');
+
+$Author=new orm\Author();
+$Author->setFirstName('Ricky');
+$Author->setLastName('Su');
+$Author->save();
+
+orm\AuthorQuery::create()->findPk($Author->getId());
+```
+
+cacheable behavior will build cache code for find pk.
+
+```php
+<?php
+// src/orm/om/BaseAuthorQuery.php
+abstract class BaseAuthorQuery extends ModelCriteria
+{
+    /**
+     * Find object by primary key.
+     * Propel uses the instance pool to skip the database if the object exists.
+     * Go fast if the query is untouched.
+     *
+     * <code>
+     * $obj  = $c->findPk(12, $con);
+     * </code>
+     *
+     * @param mixed     $key Primary key to use for the query
+     * @param PropelPDO $con an optional connection object
+     *
+     * @return Author|Author[]|mixed the result, formatted by the current formatter
+     */
+    public function findPk($pk, $con = null)
+    {
+        $id=$pk;
+        $CacheKey="Model:Author-id:"."-'".addslashes($id)."'";
+        $Cache=$this->getTagcache();
+        if ($Obj=$Cache->get($CacheKey)) {
+            return $Obj;
+        }
+        if ($Obj=$this->rebuild_findPk($pk,$con)) {
+            $Cache->set($CacheKey,$Obj);
+        }
+
+        return $Obj;
+    }
+
+    /**
+     * Find object by primary key.
+     * Propel uses the instance pool to skip the database if the object exists.
+     * Go fast if the query is untouched.
+     *
+     * <code>
+     * $obj  = $c->findPk(12, $con);
+     * </code>
+     *
+     * @param mixed $key Primary key to use for the query
+     * @param     PropelPDO $con an optional connection object
+     *
+     * @return   Author|Author[]|mixed the result, formatted by the current formatter
+     */
+    protected function rebuild_findPk($key, $con = null)
+    {
+        if ($key === null) {
+            return null;
+        }
+        if ((null !== ($obj = AuthorPeer::getInstanceFromPool((string) $key))) && !$this->formatter) {
+            // the object is alredy in the instance pool
+            return $obj;
+        }
+        if ($con === null) {
+            $con = Propel::getConnection(AuthorPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+        $this->basePreSelect($con);
+        if ($this->formatter || $this->modelAlias || $this->with || $this->select
+         || $this->selectColumns || $this->asColumns || $this->selectModifiers
+         || $this->map || $this->having || $this->joins) {
+            return $this->findPkComplex($key, $con);
+        } else {
+            return $this->findPkSimple($key, $con);
+        }
+    }
+}
+```
+
 For more information please read the [Propel document](http://propelorm.org/documentation/).
 
