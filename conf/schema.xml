@@ -3,7 +3,7 @@
     <table name="book" phpName="Book">
         <behavior name="cacheable" />
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
-        <column name="title" type="varchar" size="255" required="true" />
+        <column name="title" type="varchar" size="255" required="true"/>
         <column name="isbn" type="varchar" size="24" required="true" phpName="ISBN"/>
         <column name="publisher_id" type="integer" required="true"/>
         <column name="author_id" type="integer" required="true"/>
@@ -25,5 +25,22 @@
         <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
         <column name="name" type="varchar" size="128" required="true" />
     </table>
+    <table name="tag" phpName="Tag">
+        <behavior name="cacheable" />
+        <column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="name" type="varchar" size="128" required="true"/>
+    </table>
+    <table name="tag_book" phpName="TagBook" isCrossRef="true">
+        <behavior name="cacheable" />
+        <column name="tag_id" type="integer" required="true" primaryKey="true" />
+        <column name="book_id" type="integer" required="true"  primaryKey="true" />
+        <foreign-key foreignTable="tag">
+            <reference local="tag_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="book">
+            <reference local="book_id" foreign="id"/>
+        </foreign-key>
+    </table>
+
 </database>
 
