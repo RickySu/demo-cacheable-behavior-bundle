@@ -90,6 +90,13 @@ cd conf
 ../vendor/bin/propel-gen
 ```
 
+### convert config
+
+```
+cd conf
+../vendor/bin/propel-gen convert-conf
+```
+
 ### Init sqlite db
 
 ```
